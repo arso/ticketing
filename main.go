@@ -15,7 +15,8 @@ const (
 )
 
 func main() {
-
+	log.Println("Starting service")
 	restful.Add(ticketservice.New())
 	log.Fatal(http.ListenAndServe(":8080", nil))
+
 }

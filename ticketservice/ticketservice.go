@@ -3,8 +3,10 @@ package ticketservice
 import (
 	"github.com/arso/ticketing/dao"
 	//"github.com/arso/ticketing/model"
+	"errors"
 	"github.com/emicklei/go-restful"
-	//"log"
+	"log"
+	"net/http"
 	//"time"
 )
 
@@ -15,6 +17,7 @@ func New() *restful.WebService {
 		Path("/ticket").
 		Consumes(restful.MIME_JSON).
 		Produces(restful.MIME_JSON)
+	log.Println("Adding GET /ticket/{ticket-id}")
 	service.Route(service.GET("/{ticket-id}").To(FindTicket))
 	//service.Route(service.GET("/{ref-id}").To(FindTicketByRef))
 	//service.Route(service.POST("").To(CreateTicket))
@@ -24,7 +27,13 @@ func New() *restful.WebService {
 
 //FindTicket load ticket and return json representation
 func FindTicket(request *restful.Request, response *restful.Response) {
+	log.Println("Received GET for ticket by id")
 	id := request.PathParameter("ticket-id")
 	ticket := dao.GetTicket(id)
-	response.WriteEntity(ticket)
+	if ticket != nil {
+		response.WriteEntity(ticket)
+	} else {
+		response.WriteError(http.StatusNotFound, errors.New("Ticket not found"))
+	}
+
 }

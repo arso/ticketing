@@ -3,7 +3,6 @@ package dao
 import (
 	//"database/sql"
 	"github.com/arso/ticketing/model"
-	//"github.com/lib/pq"
 	"log"
 	"time"
 )
@@ -18,14 +17,16 @@ var (
 
 //GetTicket load ticket from db
 func GetTicket(id string) *model.Ticket {
-	err := DB.QueryRow("select ticket_id, ref_id, description, status, created_at from tickets where ticket_id = ?", id).Scan(&id, &refId, &description, &status, &createdAt)
+	log.Println("Fetching ticket with id:" + id)
+	err := DB.QueryRow("select ticket_id, ref_id, description, status, created_at from tickets where ticket_id = $1", id).Scan(&id, &refId, &description, &status, &createdAt)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+	} else {
+		log.Println(id, refId, description, status, createdAt)
+		ticket := &model.Ticket{TicketID: id, RefID: refId, Description: description, Status: status, CreatedAt: createdAt}
+		return ticket
 	}
 
-	log.Println(id, refId, description, status, createdAt)
-
-	ticket := &model.Ticket{TicketID: id, RefID: "111", Description: "todo desc", Status: "todo status", CreatedAt: time.Now()}
-	return ticket
+	return nil
 }

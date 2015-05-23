@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/arso/ticketing/dao"
 	"github.com/arso/ticketing/ticketservice"
 	"github.com/emicklei/go-restful"
 	"log"
@@ -15,8 +16,9 @@ const (
 )
 
 func main() {
+	ticketDao := &dao.TicketDao{}
 	log.Println("Starting service")
-	restful.Add(ticketservice.New())
+	restful.Add(ticketservice.New(ticketDao))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 
 }

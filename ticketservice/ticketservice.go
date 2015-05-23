@@ -10,8 +10,11 @@ import (
 	//"time"
 )
 
+var ticketDao *dao.TicketDao
+
 //New  initialization
-func New() *restful.WebService {
+func New(dao *dao.TicketDao) *restful.WebService {
+	ticketDao = dao
 	service := new(restful.WebService)
 	service.
 		Path("/ticket").
@@ -29,7 +32,7 @@ func New() *restful.WebService {
 func FindTicket(request *restful.Request, response *restful.Response) {
 	log.Println("Received GET for ticket by id")
 	id := request.PathParameter("ticket-id")
-	ticket := dao.GetTicket(id)
+	ticket := ticketDao.GetTicket(id)
 	if ticket != nil {
 		response.WriteEntity(ticket)
 	} else {
